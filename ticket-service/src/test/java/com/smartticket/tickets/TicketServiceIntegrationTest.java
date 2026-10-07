@@ -73,9 +73,13 @@ class TicketServiceIntegrationTest {
             long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
             boolean found = false;
             while (!found && System.nanoTime() < deadline) {
-                found = consumer.poll(Duration.ofMillis(250)).records("ticket.created").stream()
-                        .anyMatch(record -> id.toString().equals(record.key())
-                                && record.value().contains("\"title\":\"Cannot sign in\""));
+                for (var record : consumer.poll(Duration.ofMillis(250)).records("ticket.created")) {
+                    if (id.toString().equals(record.key())
+                            && record.value().contains("\"title\":\"Cannot sign in\"")) {
+                        found = true;
+                        break;
+                    }
+                }
             }
             assertTrue(found, "ticket.created event should be available in Kafka");
         }
