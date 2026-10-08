@@ -1,4 +1,4 @@
-FROM maven:3.9.9-eclipse-temurin-25 AS build
+FROM maven:3.9.11-eclipse-temurin-25 AS build
 WORKDIR /workspace
 COPY . .
 RUN mvn -B -pl ai-service -am package -DskipTests
